@@ -1,0 +1,22 @@
+services:
+
+  nodejs:
+    image: ${REGISTRY}vercel-lighthouse-nodejs:${VERSION:-latest}
+    build:
+      context: ./docker/build/nodejs
+      args:
+        PARENT_IMAGE: ${NODEJS_PARENT_IMAGE}
+        NODEJS_VERSION: ${NODEJS_VERSION}
+    scale: 0
+
+  vercel-lighthouse:
+    image: ${REGISTRY}vercel-lighthouse-integration:${VERSION:-latest}
+    build:
+      context: .
+      dockerfile: docker/build/lighthouse-vercel/Dockerfile
+      args:
+        BASE_IMAGE: ${REGISTRY}vercel-lighthouse-nodejs:${VERSION:-latest}
+    volumes:
+    - .:C:\app
+    ports:
+    - "3000:3000"
